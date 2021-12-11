@@ -1,30 +1,46 @@
 import express from 'express'
 
+
 const port = 3000
 const app = express()
 
-app.all('/hello', (req, res, next) => {
-    console.log(`all middleware`)
-    next()
+app.route('/hello')
+    .get((req, res) => {
+        res.send({message: 'hello get'})
+    })
+    .post((req, res) => {
+        res.status(201).json({message: 'hello post'})
+    })
+
+app.get('/file', (req, res) => {
+    res.download('/test.pdf', 'tesssst.pdf')
 })
 
-const cb1 = (req, res, next) => {
-    console.log('callback 1')
-    next()
-}
+app.get('/redirect', (req, res) => {
+    res.redirect(301, 'https://example.com')
+})
 
-const cb2 = (req, res, next) => {
-    console.log('callback 2')
-    next()
-}
+app.get('/qwe', (req, res) => {
+    res.set('Content-Type', 'application/json')
+    res.send('set example')
+})
 
-app.route('/users')
-    .get(cb1, cb2, (req, res) => {
-        res.send('hello from get!')
+app.get('/cookie', (req, res) => {
+    res.cookie('token', 'qweqwe', {
+        domain: '',
+        path: '/',
+        secure: true,
+        expires: 600000000
     })
-    .post(cb1, (req, res) => {
-        res.send('hello from post!')
-    })
+
+    res.clearCookie('token')
+
+    res.send('cookie')
+})
+
+app.get('/nores', (req, res) => {
+    res.status(404).end()
+})
 
 app.listen(port, () => {
     console.log(`server listening on http://localhost:${port}`)
