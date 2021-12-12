@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { inject } from 'inversify'
+import { inject, injectable } from 'inversify'
+import { IUserController } from './users.controller.interface'
 import { BaseController } from '../common/base.controller'
 import { HTTPError } from '../errorrs/http-error.class'
 import { ILogger } from '../logger/logger.interface'
@@ -7,7 +8,8 @@ import { TYPES } from '../types'
 import 'reflect-metadata'
 
 
-export class UsersController extends BaseController {
+@injectable()
+export class UsersController extends BaseController implements IUserController {
 	constructor(
 		@inject(TYPES.ILogger) private loggerService: ILogger
 	) {
