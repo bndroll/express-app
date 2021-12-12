@@ -8,6 +8,11 @@ import { ILogger } from './logger/logger.interface'
 import { TYPES } from './types'
 
 
+export interface IBootstrapReturn {
+	appContainer: Container
+	app: App
+}
+
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ILogger>(TYPES.ILogger).to(LoggerService)
 	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter)
@@ -15,14 +20,14 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<App>(TYPES.Application).to(App)
 })
 
-function bootstrap() {
+function bootstrap(): IBootstrapReturn {
 	const appContainer = new Container()
 	appContainer.load(appBindings)
 
 	const app = appContainer.get<App>(TYPES.Application)
 	app.init()
 
-	return {appContainer, app}
+	return { appContainer, app }
 }
 
-export const {app, appContainer} = bootstrap()
+export const { app, appContainer } = bootstrap()
