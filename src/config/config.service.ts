@@ -1,0 +1,26 @@
+import { inject, injectable } from 'inversify'
+import { config, DotenvConfigOutput, DotenvParseOutput } from 'dotenv'
+import { IConfigService } from './config.service.interface'
+import { TYPES } from '../types'
+import { ILogger } from '../logger/logger.interface'
+
+
+@injectable()
+export class ConfigService implements IConfigService {
+	private readonly config: DotenvParseOutput
+
+	constructor(@inject(TYPES.Logger) private logger: ILogger) {
+		const result: DotenvConfigOutput = config()
+
+		if (result.error) {
+			this.logger.error(`[ConfigService] can't read .env file or .env file isn't exist`)
+		} else {
+			this.logger.log(`[ConfigService] configuration is loaded`)
+			this.config = result.parsed as DotenvParseOutput
+		}
+	}
+
+	get(key: string): string {
+		return this.config[key]
+	}
+}
