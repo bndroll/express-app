@@ -5,6 +5,7 @@ import { UsersController } from './users/users.controller'
 import { ExceptionFilter } from './errorrs/exception.filter'
 import { ILogger } from './logger/logger.interface'
 import { TYPES } from './types'
+import {json} from 'body-parser'
 import 'reflect-metadata'
 
 
@@ -27,11 +28,16 @@ export class App {
 		this.app.use('/users', this.usersController.router)
 	}
 
+	useMiddleware(): void {
+		this.app.use(json())
+	}
+
 	useExceptionFilters(): void {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter))
 	}
 
 	public async init(): Promise<void> {
+		this.useMiddleware()
 		this.useRoutes()
 		this.useExceptionFilters()
 		this.server = this.app.listen(this.port)

@@ -1,17 +1,21 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
-import { IUserController } from './users.controller.interface'
+import { IUsersController } from './users.controller.interface'
 import { BaseController } from '../common/base.controller'
 import { HTTPError } from '../errorrs/http-error.class'
 import { ILogger } from '../logger/logger.interface'
 import { TYPES } from '../types'
+import { UserLoginDto } from './dto/user-login.dto'
+import { UserRegisterDto } from './dto/user-register.dto'
 import 'reflect-metadata'
+import { UsersService } from './users.service'
 
 
 @injectable()
-export class UsersController extends BaseController implements IUserController {
+export class UsersController extends BaseController implements IUsersController {
 	constructor(
-		@inject(TYPES.ILogger) private loggerService: ILogger
+		@inject(TYPES.ILogger) private loggerService: ILogger,
+		@inject(TYPES.UsersService) private usersService: UsersService
 	) {
 		super(loggerService)
 		this.bindRoutes([
@@ -20,11 +24,14 @@ export class UsersController extends BaseController implements IUserController {
 		])
 	}
 
-	login(req: Request, res: Response, next: NextFunction): void {
+	login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {
+		console.log(req.body)
 		next(new HTTPError(401, `authorization error`, 'login'))
 	}
 
-	register(req: Request, res: Response, next: NextFunction): void {
-		this.ok(res, 'register')
+	async register(req: Request<{}, {}, UserRegisterDto>, res: Response, next: NextFunction): Promise<void> {
+		const result = await this.usersService.createUser(req.body)
+		if (!result) return next(new HTTPError(422, `this user is exist`))
+		this.ok(res, { email: result.email })
 	}
 }
