@@ -12,6 +12,8 @@ import { IUsersController } from './users/users.controller.interface'
 import { IConfigService } from './config/config.service.interface'
 import { ConfigService } from './config/config.service'
 import { PrismaService } from './database/prisma.service'
+import { IUsersRepository } from './users/users.repository.interface'
+import { UsersRepository } from './users/users.repository'
 
 
 export interface IBootstrapReturn {
@@ -24,6 +26,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter)
 	bind<IUsersController>(TYPES.UsersController).to(UsersController)
 	bind<IUsersService>(TYPES.UsersService).to(UsersService)
+	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope()
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope()
 	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope()
 	bind<App>(TYPES.Application).to(App)
