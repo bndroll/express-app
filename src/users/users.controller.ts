@@ -7,8 +7,9 @@ import { ILogger } from '../logger/logger.interface'
 import { TYPES } from '../types'
 import { UserLoginDto } from './dto/user-login.dto'
 import { UserRegisterDto } from './dto/user-register.dto'
-import 'reflect-metadata'
 import { UsersService } from './users.service'
+import { ValidateMiddleware } from '../common/validate.middleware'
+import 'reflect-metadata'
 
 
 @injectable()
@@ -19,7 +20,12 @@ export class UsersController extends BaseController implements IUsersController 
 	) {
 		super(loggerService)
 		this.bindRoutes([
-			{ path: '/register', method: 'post', func: this.register },
+			{
+				path: '/register',
+				method: 'post',
+				func: this.register,
+				middlewares: [new ValidateMiddleware(UserRegisterDto)]
+			},
 			{ path: '/login', method: 'post', func: this.login }
 		])
 	}
