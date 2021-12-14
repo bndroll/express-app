@@ -9,12 +9,15 @@
         "dev": "nodemon",
         "generate": "prisma generate",
         "build": "tsc",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest",
+        "test:e2e": "jest --config jest.e2e.config.ts --coverage"
     },
     "author": "Banenkov Maxim",
     "license": "ISC",
     "dependencies": {
         "@prisma/client": "^3.6.0",
+        "@types/jest": "^27.0.3",
+        "@types/supertest": "^2.0.11",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.19.1",
         "class-transformer": "^0.5.1",
@@ -22,8 +25,11 @@
         "dotenv": "^10.0.0",
         "express": "^4.17.1",
         "inversify": "^6.0.1",
+        "jest": "^27.4.5",
         "jsonwebtoken": "^8.5.1",
         "reflect-metadata": "^0.1.13",
+        "supertest": "^6.1.6",
+        "ts-jest": "^27.1.1",
         "tslog": "^3.3.0"
     },
     "devDependencies": {
